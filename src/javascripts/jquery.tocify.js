@@ -205,12 +205,11 @@
 
                 });
 
-                //Initital mutation obersver to notice chnages in document
-                var canObserveMutation = 'MutationObserver' in window;
-
                 //If Autoupdate is enabled in options
                 if (self.options.autoUpdate) {
-                    if (canObserveMutation) {
+
+                    //Initital mutation obersver to notice chnages in document                    
+                    if ('MutationObserver' in window) {
 
                         var options = {
                                 'childList': true,
@@ -227,10 +226,7 @@
                                     if (event[i].type === 'characterData' && (event[i].target.parentNode.nodeName.toLowerCase() === 'h2' || event[i].target.parentNode.nodeName.toLowerCase() === 'h3' || event[i].target.parentNode.nodeName.toLowerCase() === 'h4' || event[i].target.parentNode.nodeName.toLowerCase() === 'h5')) {
 
                                         //Destory existing TOC
-                                        self._destroy();
-
-                                        //Recreate TOC for updated content
-                                        self._create();
+                                        self.update();
 
                                     }
                                 }
@@ -240,22 +236,18 @@
                         //Start observing changes
                         observer.observe(document.body, options);
 
+                    } else if (self.options.legacySupport) {
+
+                        //Use polling to update toc for older browsers
+                        setInterval(function () {
+
+                            //update TOC
+                            self.update();
+
+                        }, self.options.legacyPollingInterval * 1000);
+
                     }
-                } else if (self.options.legacySupport) {
-
-                    //Use polling to update toc for older browsers
-                    setInterval(function () {
-
-                        //Destory existing TOC
-                        self._destroy();
-
-                        //Recreate TOC for updated content
-                        self._create();
-
-                    }, self.options.legacyPollingInterval * 1000);
-
                 }
-
             },
 
             // _Destroy
@@ -272,6 +264,23 @@
 
                 //Remove inserted divs
                 $('.tocify-div').remove();
+            },
+
+            // Update TOC
+            // -------
+            //      Reset and create TOC
+            update: function () {
+                // _Local variables_
+
+                // Stores the plugin context in the self variable
+                var self = this
+
+                //Destroy TOC
+                self._destroy();
+
+                //Build TOC
+                self._create();
+
             },
 
             // _generateToc
