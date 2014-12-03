@@ -150,7 +150,8 @@
             //      Constructs the plugin.  Only called once.
             _create: function () {
 
-                var self = this;
+                var self = this,
+                    prop;
 
                 self.extendPageScroll = true;
 
@@ -164,8 +165,8 @@
                 self._addCSSClasses();
 
                 self.webkit = (function () {
-
-                    for (var prop in window) {
+                    var prop;
+                    for (prop in window) {
 
                         if (prop) {
 
@@ -219,10 +220,11 @@
                                 'attributeOldValue': false,
                                 'characterDataOldValue': false
                             },
+                            i,
                             observer = new MutationObserver(function (event) {
 
                                 //Check event type
-                                for (var i = 0; i < event.length; i++) {
+                                for (i = 0; i < event.length; i = i + 1) {
                                     if (event[i].type === 'characterData' && (event[i].target.parentNode.nodeName.toLowerCase() === 'h2' || event[i].target.parentNode.nodeName.toLowerCase() === 'h3' || event[i].target.parentNode.nodeName.toLowerCase() === 'h4' || event[i].target.parentNode.nodeName.toLowerCase() === 'h5')) {
 
                                         //Destory existing TOC
@@ -257,7 +259,7 @@
                 // _Local variables_
 
                 // Stores the plugin context in the self variable
-                var self = this
+                var self = this;
 
                 //Empty TOC
                 self.element.empty();
@@ -272,14 +274,18 @@
             update: function () {
                 // _Local variables_
 
-                // Stores the plugin context in the self variable
-                var self = this
+                // Stores the plugin context in the self variable, Save selcted item state
+                var self = this,
+                    focusedItem = self.element.find('.active').attr('data-unique');
 
                 //Destroy TOC
                 self._destroy();
 
                 //Build TOC
                 self._create();
+
+                //Restore state
+                self._setActiveElement(false, focusedItem);
 
             },
 
@@ -389,11 +395,11 @@
 
             },
 
-            _setActiveElement: function (pageload) {
+            _setActiveElement: function (pageload, manualHash) {
 
                 var self = this,
 
-                    hash = window.location.hash.substring(1),
+                    hash = manualHash ? manualHash : window.location.hash.substring(1),
 
                     elem = self.element.find('li[data-unique="' + hash + '"]');
 
