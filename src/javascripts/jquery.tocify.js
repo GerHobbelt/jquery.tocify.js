@@ -225,11 +225,16 @@
 
                                 //Check event type
                                 for (i = 0; i < event.length; i = i + 1) {
-                                    if (event[i].type === 'characterData' && (event[i].target.parentNode.nodeName.toLowerCase() === 'h2' || event[i].target.parentNode.nodeName.toLowerCase() === 'h3' || event[i].target.parentNode.nodeName.toLowerCase() === 'h4' || event[i].target.parentNode.nodeName.toLowerCase() === 'h5')) {
-
-                                        //Destory existing TOC
-                                        self.update();
-
+                                        
+                                    if(event[i].target.parentNode){
+                                        
+	                                    if (event[i].type === 'characterData' && (event[i].target.parentNode.nodeName.toLowerCase() === 'h2' || event[i].target.parentNode.nodeName.toLowerCase() === 'h3' || event[i].target.parentNode.nodeName.toLowerCase() === 'h4' || event[i].target.parentNode.nodeName.toLowerCase() === 'h5')) {
+	
+	                                        //Destory existing TOC
+	                                        self.update();
+	
+	                                    }
+                                    	
                                     }
                                 }
 
