@@ -428,6 +428,21 @@
                     hashValue = hashValue.replace(/:-/g, "-");
                 }
 
+                // fix period instances
+                while (hashValue.indexOf(".") > -1) {
+                    hashValue = hashValue.replace(".", "");
+                }
+
+                // remove question marks
+                while (hashValue.indexOf("?") > -1) {
+                    hashValue = hashValue.replace("?", "");
+                }
+
+                // remove double quote marks
+                while (hashValue.indexOf("\"") > -1) {
+                    hashValue = hashValue.replace(/\"/g, "");
+                }
+
             } else if (typeof hashGeneratorOption === "function") {
 
                 // call the function
