@@ -1,7 +1,12 @@
 module.exports = function(grunt) {
 
+  var spdxLicenseList = require('spdx-license-list');
+  var pkg = grunt.file.readJSON('package.json');
+  var licenseDescription = spdxLicenseList[pkg.license].name;
+  pkg.licenseDescription = licenseDescription;
+ 
   grunt.initConfig({
-    pkg: grunt.file.readJSON('package.json'),
+    pkg: pkg,
     jshint: {
       files: ['Gruntfile.js', 'public/js/app/**/*.js', '!public/js/app/**/*min.js'],
       options: {
@@ -22,9 +27,9 @@ module.exports = function(grunt) {
       options: {
         banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
         '<%= grunt.template.today("yyyy-mm-dd") %> \n' +
-        '<%= pkg.homepage ? "* " + pkg.homepage : "" %>\n' +
-        '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-        ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %>*/\n'
+        ' * <%= pkg.homepage ? "* " + pkg.homepage : "" %>\n' +
+        ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
+        ' <%= pkg.licenseDescription %> */\n'
       }
     }
   });

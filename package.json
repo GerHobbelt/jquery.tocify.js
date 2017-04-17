@@ -16,16 +16,22 @@
   "bugs": {
     "url": "https://github.com/gfranko/jquery.tocify.js/issues"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "http://www.gregfranko.com/jquery.tocify.js/blob/master/LICENSE-MIT"
-    }
-  ],
-  "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-contrib-uglify": "~0.2.0",
-    "grunt-contrib-jshint": "~0.3.0"
+  "license": "MIT",
+  "main": "src/javascripts/jquery.tocify.js",
+  "dependencies": {
+    "jquery": "3.2.1",
+    "jquery-ui": "1.12.1"
   },
-  "keywords": ["jQuery", "jQueryUI", "Twitter Bootstrap", "Table of Contents Plugin"]
+  "devDependencies": {
+    "grunt": "1.0.1",
+    "grunt-contrib-jshint": "1.1.0",
+    "grunt-contrib-uglify": "2.3.0",
+    "spdx-license-list": "3.0.1"
+  },
+  "keywords": [
+    "jQuery",
+    "jQueryUI",
+    "Twitter Bootstrap",
+    "Table of Contents Plugin"
+  ]
 }
