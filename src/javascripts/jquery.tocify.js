@@ -130,15 +130,15 @@
             // "text" (default) - The same text as the selector, unless a 'data-shortname' attribute
             // is available, which will take precedence.
             //
-            // "html" - ditto, but now the selector HTML content will be copied as-is. Again, the attribute `data-shortname` 
+            // "html" - ditto, but now the selector HTML content will be copied as-is. Again, the attribute `data-shortname`
             // contents will take precedence, if present.
             //
             // function(shortname, text, srcElement, dstElement){} - Your own text generation function that accepts
-            // the `shortname` and element's `text` as arguments, and returns a text value. 
+            // the `shortname` and element's `text` as arguments, and returns a text value.
             // - The provided `shortname` should take precedence, but this is not a strict requirement.
             // - The function is expected to set the text/content in the `dstElement` DOM node: this allows
             //   userland code to produce arbitrary HTML content for the given menu item.
-            // - `srcElement` references the DOM node which is selected and was used to produce the `text` 
+            // - `srcElement` references the DOM node which is selected and was used to produce the `text`
             //   and `shortname`.
             textGenerator: "text",
 
@@ -541,7 +541,7 @@
 
         // _generateTextValue
         // ------------------
-        // 
+        //
         // Generates the text/HTML value that will be used in the menu at node `dstElement`
         _generateTextValue: function (arr, self, index, dstElement) {
 
@@ -601,12 +601,12 @@
 
                 // fix period instances
                 while (hashValue.indexOf(".") > -1) {
-                    hashValue = hashValue.replace(".", "");
+                    hashValue = hashValue.replace(/\./g, "");
                 }
 
                 // remove question marks
                 while (hashValue.indexOf("?") > -1) {
-                    hashValue = hashValue.replace("?", "");
+                    hashValue = hashValue.replace(/\?/g, "");
                 }
 
                 // remove double quote marks
