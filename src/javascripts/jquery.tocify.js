@@ -125,14 +125,21 @@
             // argument, and returns the hash value.
             hashGenerator: "compact",
 
-            // **textGenerator**: How the text value (the text appearing in the menu) will be generated
+            // **textGenerator**: How the text value (the text appearing in the menu at `dstElement`) will be generated
             //
             // "text" (default) - The same text as the selector, unless a 'data-shortname' attribute
             // is available, which will take precedence.
             //
-            // function(shortname, text, element){} - Your own text generation function that accepts
-            // the `shortname` and element's `text` as arguments, and returns a text value. (The provided
-            // `shortname` should take precedence, but this is not a strict requirement.
+            // "html" - ditto, but now the selector HTML content will be copied as-is. Again, the attribute `data-shortname` 
+            // contents will take precedence, if present.
+            //
+            // function(shortname, text, srcElement, dstElement){} - Your own text generation function that accepts
+            // the `shortname` and element's `text` as arguments, and returns a text value. 
+            // - The provided `shortname` should take precedence, but this is not a strict requirement.
+            // - The function is expected to set the text/content in the `dstElement` DOM node: this allows
+            //   userland code to produce arbitrary HTML content for the given menu item.
+            // - `srcElement` references the DOM node which is selected and was used to produce the `text` 
+            //   and `shortname`.
             textGenerator: "text",
 
             // **highlightDefault**: Accepts a boolean: true or false
@@ -504,8 +511,6 @@
 
             hashValue = this._generateHashValue(arr, self, index);
 
-            textValue = this._generateTextValue(arr, self, index);
-
             // Appends a list item HTML element to the last unordered list HTML element found within the HTML element calling the plugin
             item = $("<li/>", {
 
@@ -516,7 +521,7 @@
 
             });
 
-            item.text(textValue);
+            this._generateTextValue(arr, self, index, item);
 
             // Adds an HTML anchor tag before the currently traversed HTML element
             self.before($("<div/>", {
@@ -536,8 +541,9 @@
 
         // _generateTextValue
         // ------------------
-        //      Generates the text value that will be used in the menu
-        _generateTextValue: function (arr, self, index) {
+        // 
+        // Generates the text/HTML value that will be used in the menu at node `dstElement`
+        _generateTextValue: function (arr, self, index, dstElement) {
 
             var textValue = "",
                 textGeneratorOption = this.options.textGenerator;
@@ -549,9 +555,20 @@
                     textValue = self.text();
                 }
 
+                dstElement.text(textValue);
+
+            } else if (textGeneratorOption === "html") {
+
+                textValue = self.attr('data-shortname') || '';
+                if (textValue.trim().length === 0) {
+                    textValue = self.html();
+                }
+
+                dstElement.html(textValue);
+
             } else if (typeof textGeneratorOption === "function") {
 
-                textValue = textGeneratorOption(self.attr('data-shortname') || '', self.text(), self);
+                textGeneratorOption(self.attr('data-shortname') || '', self.text(), self, dstElement);
 
             }
 
