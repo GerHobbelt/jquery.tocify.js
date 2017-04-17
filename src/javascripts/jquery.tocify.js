@@ -1,4 +1,4 @@
-/*! jquery.tocify - v1.9.0 - 2017-04-17 
+/*! jquery.tocify - v1.9.0 - 2017-04-17
  * * http://gregfranko.com/jquery.tocify.js/
  * Copyright (c) 2017 Greg Franko; MIT License */
 
@@ -23,6 +23,7 @@
         tocClass = "." + tocClassName,
         tocFocusClassName = "tocify-focus",
         tocHoverClassName = "tocify-hover",
+        tocOpenClassName = "tocify-open",
         hideTocClassName = "tocify-hide",
         hideTocClass = "." + hideTocClassName,
         headerClassName = "tocify-header",
@@ -123,13 +124,13 @@
             // function(text, element){} - Your own hash generation function that accepts the text as an
             // argument, and returns the hash value.
             hashGenerator: "compact",
-            
+
             // **textGenerator**: How the text value (the text appearing in the menu) will be generated
             //
-            // "text" (default) - The same text as the selector, unless a 'data-shortname' attribute 
+            // "text" (default) - The same text as the selector, unless a 'data-shortname' attribute
             // is available, which will take precedence.
             //
-            // function(shortname, text, element){} - Your own text generation function that accepts 
+            // function(shortname, text, element){} - Your own text generation function that accepts
             // the `shortname` and element's `text` as arguments, and returns a text value. (The provided
             // `shortname` should take precedence, but this is not a strict requirement.
             textGenerator: "text",
@@ -397,29 +398,37 @@
 
             });
 
-            if(self.options.extendPage) {
+            if (self.options.extendPage) {
+
                 // If the user has scrolled to the bottom of the page and the last toc item is not focused
                 var lastElem, currentElem, calculatedPadding;
 
-                if(!$(extendPageClass).length) {
+                if (!$(extendPageClass).length) {
+
                     lastElem = $('div[data-unique="' + $(itemClass).last().attr("data-unique") + '"]');
 
-                    if(!lastElem.length) return;
+                    if (!lastElem.length) return;
 
                     calculatedPadding = $(window).height() - ($(document).height() - lastElem.offset().top);
 
                     // Appends a div to the bottom of the page and sets the height to the difference of the window scrollTop and the last element's position top offset
-                    $(self.options.context).append($("<div />", {
+                    $(self.options.context).append($("<div/>", {
                         "class": extendPageClassName,
                         "height": calculatedPadding + "px",
                         "data-unique": extendPageClassName
                     }));
-                    if(self.extendPageScroll) {
+
+                    if (self.extendPageScroll) {
+
                         currentElem = self.element.find('li.active');
                         self._scrollTo($('div[data-unique="' + currentElem.attr("data-unique") + '"]'));
+
                     }
+
                 }
+
             }
+
         },
 
         _setActiveElement: function (pageload, manualHash) {
@@ -494,7 +503,7 @@
             }
 
             hashValue = this._generateHashValue(arr, self, index);
-            
+
             textValue = this._generateTextValue(arr, self, index);
 
             // Appends a list item HTML element to the last unordered list HTML element found within the HTML element calling the plugin
@@ -507,19 +516,7 @@
 
             });
 
-            if (this.options.theme !== "bootstrap3") {
-
-              item.append($("<a/>", {
-
-                "text": textValue
-
-              }));
-
-            } else {
-
-              item.text(self.text());
-
-            }
+            item.text(textValue);
 
             // Adds an HTML anchor tag before the currently traversed HTML element
             self.before($("<div/>", {
@@ -536,11 +533,11 @@
             return item;
 
         },
-        
+
         // _generateTextValue
         // ------------------
         //      Generates the text value that will be used in the menu
-        _generateTextValue: function(arr, self, index) {
+        _generateTextValue: function (arr, self, index) {
 
             var textValue = "",
                 textGeneratorOption = this.options.textGenerator;
@@ -902,6 +899,11 @@
                 // Hides all non-active sub-headers
                 self.hide($(subheaderClass).not(elem));
 
+                // Removes open class on all non-active sub-headers
+                self.element.find("." + self.openClass).removeClass(self.openClass);
+
+                // Adds open class to header
+                elem.closest(headerClass).addClass(tocOpenClassName);
             }
 
             // If the current subheader parent element is not a header
@@ -909,6 +911,9 @@
 
                 // Hides all non-active sub-headers
                 self.hide($(subheaderClass).not(elem.closest(headerClass).find(subheaderClass).not(elem.siblings())));
+
+                // Removes open class on all non-active sub-headers
+                self.element.find("." + self.openClass).removeClass(self.openClass);
 
             }
 
@@ -1017,20 +1022,11 @@
             // If the user wants a twitterBootstrap theme
             else if (this.options.theme === "bootstrap") {
 
-                this.element.find(headerClass + "," + subheaderClass).addClass("nav nav-list");
+                this.element.find(headerClass + "," + subheaderClass).addClass("list-group");
+
+                this.element.find(itemClass).addClass("list-group-item");
 
                 this.focusClass = "active";
-
-            }
-
-            // If the user wants a twitterBootstrap 3 theme
-            else if (this.options.theme === "bootstrap3") {
-
-              this.element.find(headerClass + "," + subheaderClass).addClass("list-group");
-
-              this.element.find(itemClass).addClass("list-group-item");
-
-              this.focusClass = "active";
 
             }
 
@@ -1099,8 +1095,11 @@
 
                     // Sets the smoothScroll animation time duration to the smoothScrollSpeed option
                     "duration": duration
+
                 }).promise().done(function () {
-                  currentDiv.trigger('tocify.scrollEnd');    
+
+                    currentDiv.trigger('tocify.scrollEnd');
+
                 });
 
             });
