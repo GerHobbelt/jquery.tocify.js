@@ -130,9 +130,12 @@
             
             // **textGenerator**: How the text value (the text appearing in the menu) will be generated
             //
-            // "text" (default) - The same text as the selector
-            // function(text, element){} - Your own text generation function that accepts the text as an
-            // argument, and returns a text value
+            // "text" (default) - The same text as the selector, unless a 'data-shortname' attribute 
+            // is available, which will take precedence.
+            //
+            // function(shortname, text, element){} - Your own text generation function that accepts 
+            // the `shortname` and element's `text` as arguments, and returns a text value. (The provided
+            // `shortname` should take precedence, but this is not a strict requirement.
             textGenerator: "text",
 
             // **highlightDefault**: Accepts a boolean: true or false
@@ -424,11 +427,14 @@
 
             if (textGeneratorOption === "text") {
 
-                textValue = self.text();
+                textValue = self.attr('data-shortname') || '';
+                if (textValue.trim().length === 0) {
+                    textValue = self.text();
+                }
 
             } else if (typeof textGeneratorOption === "function") {
 
-                textValue = textGeneratorOption(self.text(), self);
+                textValue = textGeneratorOption(self.attr('data-shortname') || '', self.text(), self);
 
             }
 
